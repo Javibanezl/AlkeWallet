@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alke Wallet - Depositar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="wallet-container">
+        <div class="wallet-header">
+            <h3>Depositar Dinero</h3>
+            <p>Saldo actual: <strong id="currentBalance">...</strong></p>
+        </div>
+
+        <form id="depositForm">
+            <div class="mb-4">
+                <label class="form-label">¿Cuánto quieres depositar?</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text">$</span>
+                    <input type="number" id="depositAmount" class="form-control" placeholder="0" min="1" required>
+                </div>
+            </div>
+            
+            <div id="alert-container"></div>
+
+            <button type="submit" class="btn btn-primary w-100 py-3 mb-3">Confirmar Depósito</button>
+            <a href="menu.html" class="btn btn-light w-100">Cancelar</a>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/logic.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#depositForm').submit(function(e) {
+                e.preventDefault();
+                const amount = parseFloat($('#depositAmount').val());
+
+                if(isNaN(amount) || amount <= 0) {
+                    alert("Ingresa un monto válido");
+                    return;
+                }
+
+                // 1. Calcular nuevo saldo
+                const current = getBalance();
+                const newBalance = current + amount;
+
+                // 2. Guardar
+                saveBalance(newBalance);
+
+                // 3. Mostrar alerta de éxito
+                $('#alert-container').html(`
+                    <div class="alert alert-success alert-dismissible fade show">
+                        <strong>¡Acreditado!</strong> Ya tienes $${amount} más en tu cuenta.
+                        <br>Redirigiendo...
+                    </div>
+                `);
+
+                // 4. Bloquear botón y redirigir
+                $('button[type="submit"]').prop('disabled', true);
+                
+                setTimeout(function() {
+                    window.location.href = 'menu.html';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
